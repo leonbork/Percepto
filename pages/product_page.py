@@ -1,13 +1,9 @@
-from selenium.webdriver.common.by import By
+from .base_page import BasePage
 
-class ProductPage:
-    PRODUCT_PRICE = (By.CSS_SELECTOR, "span.product-price")
+class ProductPage(BasePage):
+    def has_price(self):
+        return bool(self.driver.find_elements("class name", "product-price"))
 
-    def __init__(self, driver):
-        self.driver = driver
-
-    def check_price_and_text_size(self):
-        price_element = self.driver.find_element(*self.PRODUCT_PRICE)
-        price_exists = price_element.is_displayed()
-        text_size = self.driver.execute_script("return window.getComputedStyle(arguments[0]).fontSize;", price_element)
-        return price_exists and text_size == "1.8rem"
+    def is_price_text_size_correct(self):
+        price_element = self.driver.find_element("class name", "product-price")
+        return "1.8rem" in price_element.value_of_css_property("font-size")
